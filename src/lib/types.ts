@@ -1,4 +1,3 @@
-
 import { USER_ROLES } from "./constants";
 
 export interface User {
