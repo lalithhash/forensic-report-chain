@@ -23,6 +23,11 @@ const users: User[] = [
     address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
     role: USER_ROLES.FSL_MEMBER,
   },
+  // Adding the user's wallet with INDIAN_GOVT role
+  {
+    address: "0x6a4fd63637168C1e0F3f0e0ac86994A51CbB5d2b",
+    role: USER_ROLES.INDIAN_GOVT,
+  },
 ];
 
 const cfsls = [
