@@ -1,223 +1,177 @@
-
-// This is a mock database service
-// In a real application, this would connect to a database like Firebase, Supabase, etc.
-
-import { CFSL, Case, FSL, FSLMember, FinalReport, PoliceStation, TestReport, User } from "./types";
 import { USER_ROLES } from "./constants";
+import { User } from "./types";
 
 // Mock database
-let users: User[] = [
+const users: User[] = [
   {
-    address: "0x0000000000000000000000000000000000000001",
-    role: "INDIAN_GOVT",
-  }
+    address: "0xf39Fd6e51aad88F6F4ce6aB8829535d8F6515266",
+    role: USER_ROLES.INDIAN_GOVT,
+  },
+  {
+    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    role: USER_ROLES.CFSL,
+  },
+  {
+    address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    role: USER_ROLES.FSL,
+  },
+  {
+    address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+    role: USER_ROLES.POLICE_STATION,
+  },
+  {
+    address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+    role: USER_ROLES.FSL_MEMBER,
+  },
 ];
-let cfsls: CFSL[] = [];
-let fsls: FSL[] = [];
-let fslMembers: FSLMember[] = [];
-let policeStations: PoliceStation[] = [];
-let cases: Case[] = [];
-let testReports: TestReport[] = [];
-let finalReports: FinalReport[] = [];
 
-// User functions
-export function getUser(address: string): User | null {
-  const user = users.find(user => user.address.toLowerCase() === address.toLowerCase());
-  return user || null;
-}
+const cfsls = [
+  {
+    address: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    ipfsHash: "QmWATGH6WjFj9STsmf6m4cW269j9s9czYu8Yeqgsx5s999",
+    exists: true,
+  },
+];
 
-export function addUser(user: User): void {
-  // Check if user already exists
-  const existingUserIndex = users.findIndex(u => u.address.toLowerCase() === user.address.toLowerCase());
-  
-  if (existingUserIndex !== -1) {
-    // Update existing user
-    users[existingUserIndex] = { ...users[existingUserIndex], ...user };
-  } else {
-    // Add new user
-    users.push(user);
-  }
-}
+const fsls = [
+  {
+    address: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    cfslAddress: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    ipfsHash: "QmZ5Wj9Jz9E9P9Wj9Jz9E9P9Wj9Jz9E9P9Wj9Jz9E9",
+    exists: true,
+  },
+];
 
-// CFSL functions
-export function addCFSL(cfslData: CFSL): void {
-  cfsls.push(cfslData);
-  
-  // Also add as a user with role
-  addUser({
-    address: cfslData.address,
-    role: "CFSL",
-    ipfsHash: cfslData.ipfsHash,
-  });
-}
+const fslMembers = [
+  {
+    address: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+    ipfsHash: "QmbWqxBEKC3P8tqsKc98xmWNz9xxDNStJoBa6w732E8Z4w",
+    fslAddress: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    exists: true,
+  },
+];
 
-export function getAllCFSLs(): CFSL[] {
-  return [...cfsls];
-}
+const policeStations = [
+  {
+    address: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+    ipfsHash: "QmYRp9LFCy996999999999999999999999999999",
+    fslAddress: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    exists: true,
+  },
+];
 
-export function getCFSL(address: string): CFSL | null {
-  const cfsl = cfsls.find(cfsl => cfsl.address.toLowerCase() === address.toLowerCase());
-  return cfsl || null;
-}
+const cases = [
+  {
+    id: "CASE-2024-001",
+    ipfsHash: "QmWLcK58E5Jz99999999999999999999999999999",
+    policeStationAddress: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+    isAcceptedByFSL: false,
+  },
+];
 
-// FSL functions
-export function addFSL(fslData: FSL): void {
-  fsls.push(fslData);
-  
-  // Also add as a user with role
-  addUser({
-    address: fslData.address,
-    role: "FSL",
-    ipfsHash: fslData.ipfsHash,
-  });
-}
+const testReports = [];
 
-export function getAllFSLs(): FSL[] {
-  return [...fsls];
-}
+// User related functions
+export const getUser = (address: string): User | undefined => {
+  return users.find((user) => user.address === address);
+};
 
-export function getFSLsByCFSL(cfslAddress: string): FSL[] {
-  return fsls.filter(fsl => fsl.cfslAddress.toLowerCase() === cfslAddress.toLowerCase());
-}
+// CFSL related functions
+export const getAllCFSLs = () => {
+  return cfsls;
+};
 
-export function getFSL(address: string): FSL | null {
-  const fsl = fsls.find(fsl => fsl.address.toLowerCase() === address.toLowerCase());
-  return fsl || null;
-}
+export const addCFSL = (cfsl: any) => {
+  cfsls.push(cfsl);
+};
 
-// FSL Member functions
-export function addFSLMember(memberData: FSLMember): void {
-  fslMembers.push(memberData);
-  
-  // Also add as a user with role
-  addUser({
-    address: memberData.address,
-    role: "FSL_MEMBER",
-    ipfsHash: memberData.ipfsHash,
-  });
-}
+// FSL related functions
+export const getFSLsByCFSL = (cfslAddress: string) => {
+  return fsls.filter((fsl) => fsl.cfslAddress === cfslAddress);
+};
 
-export function getAllFSLMembers(): FSLMember[] {
-  return [...fslMembers];
-}
+export const getAllFSLs = () => {
+  return fsls;
+};
 
-export function getFSLMembersByFSL(fslAddress: string): FSLMember[] {
-  return fslMembers.filter(member => member.fslAddress.toLowerCase() === fslAddress.toLowerCase());
-}
+export const addFSL = (fsl: any) => {
+  fsls.push(fsl);
+};
 
-export function getFSLMember(address: string): FSLMember | null {
-  const member = fslMembers.find(member => member.address.toLowerCase() === address.toLowerCase());
-  return member || null;
-}
+// FSL Member related functions
+export const getAllFSLMembers = (fslAddress: string) => {
+  // In a real app, this would be a database query
+  // For now, mock implementation returning empty array
+  return [];
+};
 
-// Police Station functions
-export function addPoliceStation(stationData: PoliceStation): void {
-  policeStations.push(stationData);
-  
-  // Also add as a user with role
-  addUser({
-    address: stationData.address,
-    role: "POLICE_STATION",
-    ipfsHash: stationData.ipfsHash,
-  });
-}
+// Police Station related functions
+export const getAllPoliceStations = (fslAddress: string) => {
+  // In a real app, this would be a database query
+  // For now, mock implementation returning empty array
+  return [];
+};
 
-export function getAllPoliceStations(): PoliceStation[] {
-  return [...policeStations];
-}
+// Case related functions
+export const getCasesByFSL = (fslAddress: string) => {
+  // In a real app, this would be a database query
+  // For now, mock implementation returning empty array
+  return [];
+};
 
-export function getPoliceStationsByFSL(fslAddress: string): PoliceStation[] {
-  return policeStations.filter(station => station.fslAddress.toLowerCase() === fslAddress.toLowerCase());
-}
+export const getCasesByPoliceStation = (policeStationAddress: string) => {
+  // In a real app, this would be a database query
+  // For now, mock implementation returning empty array
+  return cases.filter((c) => c.policeStationAddress === policeStationAddress);
+};
 
-export function getPoliceStation(address: string): PoliceStation | null {
-  const station = policeStations.find(station => station.address.toLowerCase() === address.toLowerCase());
-  return station || null;
-}
+export const getNonAcceptedCases = () => {
+  // In a real app, this would be a database query
+  // For now, mock implementation returning empty array
+  return cases.filter((c) => !c.isAcceptedByFSL);
+};
 
-// Case functions
-export function addCase(caseData: Case): void {
-  cases.push(caseData);
-}
+export const addCase = (newCase: any) => {
+  cases.push(newCase);
+};
 
-export function updateCase(caseId: string, updateData: Partial<Case>): void {
-  const caseIndex = cases.findIndex(c => c.id === caseId);
+export const updateCase = (caseId: string, updatedCase: any) => {
+  const caseIndex = cases.findIndex((c) => c.id === caseId);
   if (caseIndex !== -1) {
-    cases[caseIndex] = { ...cases[caseIndex], ...updateData };
+    cases[caseIndex] = { ...cases[caseIndex], ...updatedCase };
   }
-}
+};
 
-export function getAllCases(): Case[] {
-  return [...cases];
-}
+// Test Report related functions
+export const getTestReportsByMember = (memberAddress: string) => {
+  // In a real app, this would be a database query
+  // For now, mock implementation returning empty array
+  return testReports.filter(report => report.members.includes(memberAddress));
+};
 
-export function getUnacceptedCases(): Case[] {
-  return cases.filter(c => !c.isAcceptedByFSL);
-}
+export const addTestReport = (report: any) => {
+  // Mock implementation for storing a test report
+  // Will be replaced with actual storage in a database
+  testReports.push(report);
+};
 
-export function getCasesByPoliceStation(policeStationAddress: string): Case[] {
-  return cases.filter(c => c.policeStationAddress.toLowerCase() === policeStationAddress.toLowerCase());
-}
-
-export function getCase(caseId: string): Case | null {
-  const caseItem = cases.find(c => c.id === caseId);
-  return caseItem || null;
-}
-
-// Test Report functions
-export function addTestReport(reportData: TestReport): void {
-  testReports.push(reportData);
-}
-
-export function updateTestReport(reportId: string, updateData: Partial<TestReport>): void {
-  const reportIndex = testReports.findIndex(r => r.id === reportId);
+export const addSignatureToReport = (reportId: string, memberAddress: string) => {
+  const reportIndex = testReports.findIndex((report) => report.id === reportId);
   if (reportIndex !== -1) {
-    testReports[reportIndex] = { ...testReports[reportIndex], ...updateData };
-  }
-}
-
-export function addSignatureToReport(reportId: string, memberAddress: string): void {
-  const reportIndex = testReports.findIndex(r => r.id === reportId);
-  if (reportIndex !== -1) {
-    if (!testReports[reportIndex].signatures.includes(memberAddress)) {
-      testReports[reportIndex].signatures = [...testReports[reportIndex].signatures, memberAddress];
+    const report = testReports[reportIndex];
+    if (!report.signatures) {
+      report.signatures = [];
+    }
+    if (!report.signatures.includes(memberAddress)) {
+      report.signatures.push(memberAddress);
     }
   }
-}
+};
 
-export function getAllTestReports(): TestReport[] {
-  return [...testReports];
-}
+export const addFSLMember = (member: any) => {
+  fslMembers.push(member);
+};
 
-export function getTestReportsByCase(caseId: string): TestReport[] {
-  return testReports.filter(r => r.caseId === caseId);
-}
-
-export function getTestReportsForMember(memberAddress: string): TestReport[] {
-  return testReports.filter(r => 
-    r.members.includes(memberAddress) || r.reportHead.toLowerCase() === memberAddress.toLowerCase()
-  );
-}
-
-export function getTestReport(reportId: string): TestReport | null {
-  const report = testReports.find(r => r.id === reportId);
-  return report || null;
-}
-
-// Final Report functions
-export function addFinalReport(reportData: FinalReport): void {
-  finalReports.push(reportData);
-}
-
-export function getAllFinalReports(): FinalReport[] {
-  return [...finalReports];
-}
-
-export function getFinalReportsByCase(caseId: string): FinalReport[] {
-  return finalReports.filter(r => r.caseId === caseId);
-}
-
-export function getFinalReport(reportId: string): FinalReport | null {
-  const report = finalReports.find(r => r.id === reportId);
-  return report || null;
-}
+export const addPoliceStation = (station: any) => {
+  policeStations.push(station);
+};
